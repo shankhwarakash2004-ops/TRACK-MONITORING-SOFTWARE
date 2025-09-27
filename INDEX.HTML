@@ -1,0 +1,342 @@
+
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAVIOURS (ITMS)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .text-dark-blue {
+            color: #1a237e;
+        }
+        .bg-light-yellow {
+            background-color: #FFFBEA;
+        }
+        .btn-primary {
+            background-color: #1a237e;
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #151e6d;
+        }
+        .live-data-card {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Styles for the live analysis section */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+        }
+        .gradient-bg {
+            background-image: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        }
+        .track-map-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            cursor: grab;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .track-map-container:active {
+            cursor: grabbing;
+        }
+        .track-map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            user-select: none;
+            pointer-events: none;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="antialiased">
+
+    <!-- Sticky Navigation Bar -->
+    <nav class="sticky top-0 bg-white shadow-sm z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-dark-blue">SAVIOURS (ITMS)</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#" onclick="showSection('landing')" class="nav-link text-gray-600 hover:text-dark-blue font-medium">Home</a>
+                <a href="#" onclick="showSection('live-analysis-page')" class="nav-link text-gray-600 hover:text-dark-blue font-medium">Live Analysis</a>
+                <a href="#" onclick="showSection('benefits')" class="nav-link text-gray-600 hover:text-dark-blue font-medium">Benefits</a>
+                <a href="#" onclick="showSection('contact')" class="nav-link text-gray-600 hover:text-dark-blue font-medium">Contact</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-gray-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="landing" class="bg-light-yellow py-12 md:py-24">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-dark-blue leading-tight">
+                Revolutionizing Track Monitoring for Indian Railways
+            </h1>
+            <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
+                Introducing our indigenous, contactless Integrated Track Monitoring System (ITMS) – a powerful, Make in India solution for enhanced safety, efficiency, and real-time track health analysis.
+            </p>
+            <div class="mt-8 flex justify-center space-x-4">
+                <a href="#" onclick="showSection('live-analysis-page')" class="btn-primary">View Live Analysis</a>
+                <a href="#" onclick="showSection('contact')" class="px-6 py-4 rounded-lg font-semibold text-dark-blue border-2 border-dark-blue hover:bg-dark-blue hover:text-white transition-colors">Get a Quote</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Analysis Page Section -->
+    <section id="live-analysis-page" class="hidden py-16 md:py-20 px-4 md:px-8 gradient-bg text-gray-100">
+        <div class="max-w-7xl mx-auto">
+            <header class="text-center mb-10">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+                    Live Track Analysis
+                </h2>
+                <p class="mt-2 text-lg text-gray-300">
+                    Data from the last completed ITMS inspection run
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Dashboard Card -->
+                <div class="card p-6 flex flex-col items-center justify-center text-center">
+                    <div class="text-4xl font-bold text-gray-800" id="distance-travelled">150 km</div>
+                    <p class="mt-2 text-gray-600 font-medium">Total Distance Travelled</p>
+                </div>
+
+                <!-- Defects Card -->
+                <div class="card p-6 flex flex-col items-center justify-center text-center">
+                    <div class="text-4xl font-bold text-red-600" id="defects-found">6</div>
+                    <p class="mt-2 text-gray-600 font-medium">Irregularities/Defects Found</p>
+                </div>
+            </div>
+
+            <!-- GPS Map Card with your image -->
+            <div class="card p-4">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Track Map</h2>
+                <div id="track-map-container" class="track-map-container">
+                    <img id="track-map-image" src="track image.jpg" alt="Track Map with Defects" class="track-map-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="hidden py-16 md:py-24">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-dark-blue mb-12">Delivering Safety and Efficiency</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">Predictive Maintenance</h3>
+                        <p class="mt-2 text-gray-600">
+                            Our system uses AI and machine learning to identify potential track defects before they become critical, enabling proactive and cost-effective maintenance.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">Enhanced Safety</h3>
+                        <p class="mt-2 text-gray-600">
+                            Continuous monitoring reduces the risk of derailments and accidents by providing early warnings of track degradation.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">Reduced Labor Costs</h3>
+                        <p class="mt-2 text-gray-600">
+                            Automated, high-speed inspections minimize the need for manual track walking and a large workforce, freeing up personnel for more critical tasks.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-container">
+                        <canvas id="benefitsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="hidden py-16 md:py-24">
+        <div class="container mx-auto px-4 max-w-2xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-dark-blue mb-4">Get in Touch</h2>
+            <p class="text-center text-lg text-gray-600 mb-8">
+                Ready to transform your track monitoring capabilities? Fill out the form below and we will get back to you shortly.
+            </p>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                <form id="contact-form" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                        <textarea id="message" name="message" rows="4" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full btn-primary transition-all duration-300">Submit</button>
+                    </div>
+                </form>
+                <div id="success-message" class="hidden mt-6 text-center text-lg font-semibold text-green-700">
+                    Thank you for your message! We'll be in touch soon.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-blue py-8 text-white text-center">
+        <p>© 2024 ITMS Solutions. All rights reserved. </p>
+        <p class="mt-2 text-sm text-gray-400">Developed for Indian Railways with pride.</p>
+    </footer>
+
+    <script>
+        // --- Single Page Application (SPA) Logic ---
+        const sections = ['landing', 'live-analysis-page', 'benefits', 'contact'];
+
+        function showSection(sectionId) {
+            sections.forEach(id => {
+                const section = document.getElementById(id);
+                if (section) {
+                    section.classList.add('hidden');
+                }
+            });
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('landing');
+        });
+
+        // --- CONTACT FORM SUBMISSION ---
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('contact-form').classList.add('hidden');
+            document.getElementById('success-message').classList.remove('hidden');
+        });
+
+        // --- BENEFITS CHART ---
+        const benefitsCtx = document.getElementById('benefitsChart').getContext('2d');
+        new Chart(benefitsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Manual', 'ITMS'],
+                datasets: [{
+                    label: 'Annual Maintenance Cost Savings (₹)',
+                    data: [10000000, 2000000],
+                    backgroundColor: ['#6b7280', '#1a237e'],
+                    borderColor: ['#6b7280', '#1a237e'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cost (INR)'
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // --- LIVE ANALYSIS MAP LOGIC (Pan and Zoom) ---
+        const trackMapContainer = document.getElementById('track-map-container');
+        const trackMapImage = document.getElementById('track-map-image');
+        let scale = 1.0;
+        let translateX = 0;
+        let translateY = 0;
+        let isDragging = false;
+        let lastX, lastY;
+
+        function updateTransform() {
+            trackMapImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+        
+        trackMapContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+        });
+
+        trackMapContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        trackMapContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        trackMapContainer.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaX = e.clientX - lastX;
+                const deltaY = e.clientY - lastY;
+                translateX += deltaX;
+                translateY += deltaY;
+                lastX = e.clientX;
+                lastY = e.clientY;
+                updateTransform();
+            }
+        });
+
+        trackMapContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomSpeed = 0.05;
+            const delta = e.deltaY > 0 ? -zoomSpeed : zoomSpeed;
+            scale = Math.max(0.5, Math.min(2.0, scale + delta));
+            updateTransform();
+        });
+    </script>
+</body>
+</html>
